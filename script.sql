@@ -30,3 +30,43 @@ SELECT first_name AS Имя, SUM(age) AS суммарный_возраст FROM 
 SELECT first_name, age FROM employee WHERE age=(SELECT MIN(age) FROM employee);
 SELECT first_name, age FROM employee WHERE age IN (SELECT MAX(age) FROM employee GROUP BY first_name HAVING COUNT (first_name)>1) ORDER BY 2;
 SELECT*FROM employee;
+
+CREATE TABLE city (
+                      city_id BIGSERIAL NOT NULL PRIMARY KEY,
+                      city_name VARCHAR(30) NOT NULL);
+
+ALTER TABLE employee ADD city_id INT;
+ALTER TABLE employee ADD CONSTRAINT city_id FOREIGN KEY(city_id) REFERENCES city(city_id);
+
+INSERT INTO city (city_name) VALUES ('Омск');
+INSERT INTO city (city_name) VALUES ('Томск');
+INSERT INTO city (city_name) VALUES ('Новосибирск');
+INSERT INTO city (city_name) VALUES ('Красноярск');
+INSERT INTO city (city_name) VALUES ('Екатеринбург');
+
+UPDATE employee SET city_id=1 WHERE id = 1;
+UPDATE employee SET city_id=1 WHERE id = 1;
+UPDATE employee SET city_id=3 WHERE id = 5;
+UPDATE employee SET city_id=4 WHERE id = 4;
+UPDATE employee SET city_id=5 WHERE id = 8;
+UPDATE employee SET city_id=5 WHERE id = 9;
+
+--1
+SELECT first_name, last_name, city_name FROM employee
+                                                 INNER JOIN city ON employee.city_id=city.city_id;
+
+--2
+SELECT first_name, last_name, city_name FROM city
+                                                 LEFT JOIN employee ON city.city_id=employee.city_id;
+
+--3
+SELECT first_name, city_name FROM employee FULL JOIN city ON employee.city_id=city.city_id;
+
+--4
+SELECT first_name, city_name FROM employee CROSS JOIN city;
+
+--5
+SELECT city_name FROM city LEFT JOIN employee ON city.city_id=employee.city_id WHERE employee.first_name IS NULL;
+
+SELECT*FROM employee;
+SELECT*FROM city;
